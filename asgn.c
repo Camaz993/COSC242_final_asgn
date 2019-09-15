@@ -10,7 +10,7 @@
 /* The default hashtable size */
 #define SIZE 113
 
-int print_help(){
+void print_help(){
   printf(" Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
  Perform various operations using a hash table.  By default, words are\n \
  read from stdin and added to the hash table, before being printed out\n\
@@ -25,7 +25,7 @@ stderr\n -p           Print stats info instead of frequencies & words\n\
  -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
  -t TABLESIZE Use the first prime >= TABLESIZE as the hashtable size\n\n\
  -h           Display a help message\n\n");
-      return EXIT_SUCCESS;
+     
 }
 
 /*
@@ -41,7 +41,7 @@ int main(int argc, char **argv){
     
     int table_size = SIZE;
 
-    int c_flag=0, e_flag=0, p_flag=0, s_flag=0, h_flag=0;
+    int c_flag=0, e_flag=0, p_flag=0, s_flag=0;
 
     clock_t start, end;
     double search_time=0.0, fill_time=0.0;
@@ -93,8 +93,8 @@ int main(int argc, char **argv){
 	table_size = next_prime(atoi(optarg));
 	break;
       case 'h':
-	h_flag = 1;
-	break;
+	print_help();
+	return 1;
       default: 
 	printf("Unknown input: -%c %s\n", option, optarg);
 	print_help();
@@ -152,11 +152,6 @@ int main(int argc, char **argv){
         fprintf(stderr, "Search time   : %f\n", search_time);
         fprintf(stderr, "Unknown words = %d\n", unknown);
 	fclose(file_pointer);
-    }
-
-    
-    if(h_flag==1){
-      print_help();
     }
     
     /* free the htable memory */
