@@ -10,6 +10,24 @@
 /* The default hashtable size */
 #define SIZE 113
 
+int print_help(){
+  printf(" Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
+ Perform various operations using a hash table.  By default, words are\n \
+ read from stdin and added to the hash table, before being printed out\n\
+ alongside their frequencies to stdout.\n\n");
+      printf(" -c FILENAME  Check spelling of words in FILENAME using \
+words\n              from stdin as a dictionary.  Print any unknown words to\n\
+              stdout, all timing info & count to stderr (ignores -p)\n\
+ -d           Use double hashing (linear probing is the default)\n"
+	     );
+      printf(" -e           Display entire contents of hash table on \
+stderr\n -p           Print stats info instead of frequencies & words\n\
+ -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
+ -t TABLESIZE Use the first prime >= TABLESIZE as the hashtable size\n\n\
+ -h           Display a help message\n\n");
+      return EXIT_SUCCESS;
+}
+
 /*
 * The main method of the program. It takes arguments from the terminal and
 * depending on the argument, cases will be executed accordingly. 
@@ -79,6 +97,7 @@ int main(int argc, char **argv){
 	break;
       default: 
 	printf("Unknown input: -%c %s\n", option, optarg);
+	print_help();
 	return 1;
       }
     }
@@ -135,21 +154,9 @@ int main(int argc, char **argv){
 	fclose(file_pointer);
     }
 
+    
     if(h_flag==1){
-      printf(" Usage: ./sample-asgn [OPTION]... <STDIN>\n\n\
- Perform various operations using a hash table.  By default, words are\n \
- read from stdin and added to the hash table, before being printed out\n\
- alongside their frequencies to stdout.\n\n");
-      printf(" -c FILENAME  Check spelling of words in FILENAME using \
-words\n              from stdin as a dictionary.  Print any unknown words to\n\
-              stdout, all timing info & count to stderr (ignores -p)\n\
- -d           Use double hashing (linear probing is the default)\n"
-	     );
-      printf(" -e           Display entire contents of hash table on \
-stderr\n -p           Print stats info instead of frequencies & words\n\
- -s SNAPSHOTS Show SNAPSHOTS stats snapshots (if -p is used)\n\
- -t TABLESIZE Use the first prime >= TABLESIZE as the hashtable size\n\n\
- -h           Display a help message\n");
+      print_help();
     }
     
     /* free the htable memory */
