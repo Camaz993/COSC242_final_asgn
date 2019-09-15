@@ -14,10 +14,40 @@ struct htablerec {
     hashing_t method;
 };
 
+
 /**
- * WHAT DOES THIS FUNCTION DO
+ * Creates a new empty hash table.
  *
- * @param word - 
+ * Returns the new table as result.
+ *
+ * @param capacity - The capacity of the table.
+ * @param h_type - The type of hashing to use; linear or double.
+ */
+htable htable_new(int capacity, hashing_t h_type) {
+    int i;
+    htable result = emalloc(sizeof *result);
+    result->capacity = capacity;
+    result->num_keys = 0;
+    result->method = h_type;
+    result->frequencies = emalloc(result->capacity * sizeof(result->
+                                                            frequencies[0]));
+    result->keys = emalloc(result->capacity * sizeof(result->keys[0]));
+    result->stats = emalloc(result->capacity * sizeof(result->stats[0]));
+    
+    for(i = 0; i < result->capacity; i++) {
+        result->frequencies[i] = 0;
+        result->keys[i] = NULL;
+        result->stats[i] = 0;
+    }
+
+    return result;
+}
+
+
+/**
+ * Used when searching for or inserting values into a hash table
+ *
+ * @param word  
  */
 static unsigned int htable_word_to_int(char *word) {
     unsigned int result = 0;
@@ -30,10 +60,10 @@ static unsigned int htable_word_to_int(char *word) {
 }
 
 /**
- * WHAT DOES THIS FUNCTION DO
+ *  Used when searching for or inserting values into a hash table
  *
  * @param h - the hash table.
- * @param i_key - 
+ * @param i_key - how far to step
  */
 static unsigned int htable_step(htable h, unsigned int i_key) {
     unsigned int result = 1 + (i_key % (h->capacity - 1));
@@ -60,6 +90,7 @@ void htable_free(htable h) {
     free(h);
 }
 
+
 /**
  * Inserts the words into the hashtable.
  * As defined hashing type (linear or double).
@@ -70,17 +101,14 @@ void htable_free(htable h) {
 int htable_insert(htable h, char *str) {
     int collisions = 0;
     unsigned int key = htable_word_to_int(str);
-    unsigned int index = key % h->capacity;
     unsigned int step = (h->method == LINEAR_P) ? 1 : htable_step(h, key);
+    unsigned int index = key % h->capacity;
 
     while(h->keys[index] != NULL && strcmp(str, h->keys[index]) != 0) {
         index = (index + step) % h->capacity;
-        
-
         if(index == (key % h->capacity)) {
-            return 00000000000;
+            return 0;
         }
-
         collisions++;
     }
 
@@ -101,33 +129,6 @@ int htable_insert(htable h, char *str) {
     }
 }
 
-/**
- * Creates a new empty hash table.
- *
- * Returns the new table as result.
- *
- * @param capacity - The capacity of the table.
- * @param h_type - Determines the type of hashing to use; linear or double.
- */
-htable htable_new(int capacity, hashing_t h_type) {
-    int i;
-    htable result = emalloc(sizeof *result);
-    result->capacity = capacity;
-    result->num_keys = 0;
-    result->method = h_type;
-    result->frequencies = emalloc(result->capacity * sizeof(result->
-                                                            frequencies[0]));
-    result->keys = emalloc(result->capacity * sizeof(result->keys[0]));
-    result->stats = emalloc(result->capacity * sizeof(result->stats[0]));
-    
-    for(i = 0; i < result->capacity; i++) {
-        result->frequencies[i] = 0;
-        result->keys[i] = NULL;
-        result->stats[i] = 0;
-    }
-
-    return result;
-}
 
 /**
  * Prints all the frequencies and the keys using a for loop.
@@ -139,10 +140,11 @@ void htable_print(htable h) {
     int i;
     for(i = 0; i < h->capacity; i++) {
         if(h->keys[i] != NULL) {
-            printf("%d\t%s\n", h->frequencies[i], h->keys[i]);
+            printf("%d  %s\n", h->frequencies[i], h->keys[i]);
         }
     }
 }
+
 
 /**
  * Prints the entire contents of the hashtable.
@@ -199,6 +201,10 @@ int htable_search(htable h, char *str) {
 
     return h->frequencies[index];
 }
+
+
+
+/*************FUNCTIONS GIVEN TO US*************/
 
 /**
  * Prints out a line of data from the hash table to reflect the state
